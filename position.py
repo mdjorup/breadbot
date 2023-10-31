@@ -3,9 +3,9 @@ from datetime import datetime
 
 from alpaca.trading.enums import OrderSide
 
-from bar_socket import BarSubscriber
 from shared import Bar, Trade
-from trade_socket import TradeSubscriber
+from sockets.bar_socket import BarSubscriber
+from sockets.trade_socket import TradeSubscriber
 
 
 # TODO: do average price per share tracking based on trades that come in

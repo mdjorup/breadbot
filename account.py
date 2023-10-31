@@ -6,9 +6,9 @@ from alpaca.trading.models import Order, TradeAccount
 from alpaca.trading.requests import MarketOrderRequest
 from dotenv import load_dotenv
 
-from bar_socket import GLOBAL_BAR_SOCKET
 from position import CashPosition, Position
-from trade_socket import GLOBAL_TRADE_SOCKET
+from sockets.bar_socket import GLOBAL_BAR_SOCKET
+from sockets.trade_socket import GLOBAL_TRADE_SOCKET
 
 
 class Account:

@@ -2,8 +2,8 @@ from typing import List
 
 import numpy as np
 
-from bar_socket import GLOBAL_BAR_SOCKET
 from market.data_field import DataFieldManager
+from sockets.bar_socket import GLOBAL_BAR_SOCKET
 
 
 class MarketData:

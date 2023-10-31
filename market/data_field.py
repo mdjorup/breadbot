@@ -3,8 +3,8 @@ from typing import Dict, Type
 
 import numpy as np
 
-from bar_socket import BarSubscriber
 from shared import Bar
+from sockets.bar_socket import BarSubscriber
 
 
 class DataField(ABC):
@@ -13,7 +13,7 @@ class DataField(ABC):
         self.window_length = window_length
 
     @abstractmethod
-    def get_data(self, symbol) -> np.ndarray:
+    def get_data(self) -> np.ndarray:
         pass
 
     @abstractmethod
@@ -50,4 +50,4 @@ class DataFieldManager(BarSubscriber):
 
     def get_data(self, symbol) -> np.ndarray:
         self.__check_symbol(symbol)
-        return self.data_fields[symbol].get_data(symbol)
+        return self.data_fields[symbol].get_data()
