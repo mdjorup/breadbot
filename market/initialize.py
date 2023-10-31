@@ -6,7 +6,9 @@ from market.simple_fields import (
     ClosePriceField,
     HighPriceField,
     LowPriceField,
+    MovingAverageField,
     OpenPriceField,
+    VolumeField,
 )
 
 
@@ -20,6 +22,8 @@ def initialize_market_data_system(stock_symbols: List[str]):
         DataFieldManager("Low", window_length, LowPriceField),
         DataFieldManager("High", window_length, HighPriceField),
         DataFieldManager("Close", window_length, ClosePriceField),
+        DataFieldManager("Volume", window_length, VolumeField),
+        DataFieldManager("MovingAverage10", window_length, MovingAverageField, 10),
     ]
 
     # Define the stock symbols you are interested in

@@ -23,11 +23,18 @@ class DataField(ABC):
 
 class DataFieldManager(BarSubscriber):
     def __init__(
-        self, field_name: str, window_length: int, data_field_class: Type[DataField]
+        self,
+        field_name: str,
+        window_length: int,
+        data_field_class: Type[DataField],
+        *args,
+        **kwargs,
     ):
         self.window_length = window_length
         self.name = field_name
         self.data_field_class = data_field_class
+        self.data_field_args = args
+        self.data_field_kwargs = kwargs
         self.data_fields: Dict[
             str, data_field_class
         ] = {}  # maps a symbol to a datafield
@@ -38,7 +45,10 @@ class DataFieldManager(BarSubscriber):
     def register_symbol(self, symbol: str):
         if symbol not in self.data_fields:
             self.data_fields[symbol] = self.data_field_class(
-                self.name, self.window_length
+                self.name,
+                self.window_length,
+                *self.data_field_args,
+                **self.data_field_kwargs,
             )
         else:
             raise ValueError(f"Symbol {symbol} is already registered in {self.name}")
