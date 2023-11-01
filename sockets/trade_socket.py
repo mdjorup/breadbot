@@ -30,14 +30,14 @@ class TradeSocket:
         self.subscribers.append(subscriber)
 
     async def update_all(self, data):
-        if not data.qty or not data.price:
+        if not data["qty"] or not data["price"]:
             return
 
-        side = data.order.side
-        symbol = data.order.symbol
-        qty = float(data.qty)
-        price = float(data.price)
-        timestamp = data.timestamp
+        side = data["order"]["side"]
+        symbol = data["order"]["symbol"]
+        qty = float(data["qty"])
+        price = float(data["price"])
+        timestamp = data["timestamp"]
 
         trade = Trade(side, symbol, qty, price, timestamp)
 
@@ -46,6 +46,9 @@ class TradeSocket:
 
     def run(self):
         # Create and start the thread
+        if os.environ.get("ENV", "") != "prod":
+            return
+
         self.thread = threading.Thread(target=self._run_thread)
         self.thread.start()
         self.stream.subscribe_trade_updates(self.update_all)
@@ -60,6 +63,8 @@ class TradeSocket:
 
     def stop(self):
         # Signal the thread to stop and wait for it to finish
+        if os.environ.get("ENV", "") != "prod":
+            return
         self.stop_flag.set()
         self.stream.stop()
         self.thread.join()

@@ -59,6 +59,9 @@ class BarSocket:
         self.active_subs.remove(symbol)
 
     def run(self):
+        if os.environ.get("ENV", "") != "prod":
+            return
+
         self.thread = threading.Thread(target=self._run_thread)
         self.thread.start()
 
@@ -71,6 +74,9 @@ class BarSocket:
 
     def stop(self):
         # Signal the thread to stop and wait for it to finish
+        if os.environ.get("ENV", "") != "prod":
+            return
+
         self.stop_flag.set()
         self.stream.stop()
         self.thread.join()
