@@ -30,8 +30,10 @@ class LogReturnField(DataField, ABC):
 
         return np.array(log_returns)
 
-    def add_entry(self, value: float, ref: float):
+    def add_entry(self, value: float, ref: float = 0):
         # TODO: make this log return field work
+        if ref == 0:
+            ref = value
         if value <= 0:
             raise ValueError("Value must be positive for log return calculation")
         self.data.append(value)
@@ -60,7 +62,7 @@ class ClosePriceField(LogReturnField):
 
 class VolumeField(LogReturnField):
     def update(self, bar: Bar):
-        self.add_entry(bar.volume, bar.volume)
+        self.add_entry(bar.volume)
 
 
 class MovingAverageField(LogReturnField):
@@ -68,10 +70,8 @@ class MovingAverageField(LogReturnField):
         super().__init__(name, window_length)
 
         self.period = period
-        # self.data contains the moving averages
 
     def update(self, bar: Bar):
-        # self.trailing_window.append(bar.close)
         close = bar.close
         cur_len = len(self.data)
 
@@ -82,4 +82,31 @@ class MovingAverageField(LogReturnField):
         else:
             new_ma = self.data[-1] + (close - self.data[-self.period]) / self.period
 
-        self.add_entry(new_ma, new_ma)
+        self.add_entry(new_ma)
+
+
+class ExponentialMovingAverageField(LogReturnField):
+    def __init__(self, name: str, window_length: int, period: int):
+        super().__init__(name, window_length)
+
+        self.period = period
+        self.multiplier = 2 / (period + 1)
+
+    def update(self, bar: Bar):
+        close = bar.close
+        cur_len = len(self.data)
+
+        if cur_len == 0:
+            new_ma = close
+        else:
+            new_ma = self.data[-1] * (1 - self.multiplier) + close * self.multiplier
+
+        self.add_entry(new_ma)
+
+
+class RSI(DataField):
+    def get_data(self) -> np.ndarray:
+        return np.array([])
+
+    def update(self):
+        pass
