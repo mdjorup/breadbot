@@ -66,4 +66,18 @@ class VolumeField(LogReturnField):
 class MovingAverageField(LogReturnField):
     def __init__(self, name: str, window_length: int, period: int):
         super().__init__(name, window_length)
-        self.data = deque(maxlen=window_length)
+
+        self.period = period
+        # self.data contains the moving averages
+
+    def update(self, bar: Bar):
+        # self.trailing_window.append(bar.close)
+        close = bar.close
+        cur_len = len(self.data)
+
+        if cur_len < self.period:
+            new_ma = self.data[-1] * (cur_len / (cur_len + 1)) + close / (cur_len + 1)
+        else:
+            new_ma = self.data[-1] + (close - self.data[-self.period]) / self.period
+
+        self.add_entry(new_ma, new_ma)
