@@ -25,4 +25,6 @@ class MarketData:
         # return the data
 
         # here's the implementation:
-        return np.concatenate([field.get_data(symbol) for field in self.fields])
+        ret = np.column_stack([field.get_data(symbol) for field in self.fields])
+        print(ret.shape)
+        return ret

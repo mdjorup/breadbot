@@ -1,6 +1,9 @@
+import asyncio
 import os
 import time
+from datetime import datetime
 
+import numpy as np
 from alpaca.trading.enums import OrderSide
 
 from account import Account
@@ -27,7 +30,25 @@ account.trade("TSLA", 10, OrderSide.SELL)
 account.trade("AAPL", 10, OrderSide.BUY)
 account.trade("TSLA", 10, OrderSide.BUY)
 
+for _ in range(30):
+    asyncio.run(
+        GLOBAL_BAR_SOCKET.update_all(
+            {
+                "symbol": "AAPL",
+                "open": 130 + np.random.normal(0, 1),
+                "high": 130 + np.random.normal(0, 1),
+                "low": 130 + np.random.normal(0, 1),
+                "close": 130 + np.random.normal(0, 1),
+                "volume": 1000000 + int(np.random.normal(0, 1000)),
+                "timestamp": datetime.now(),
+            }
+        )
+    )
+
 account.print_account_positions()
+
+print(market_data.state("AAPL"))
+
 
 GLOBAL_TRADE_SOCKET.stop()
 GLOBAL_BAR_SOCKET.stop()

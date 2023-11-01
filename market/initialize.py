@@ -14,7 +14,7 @@ from market.simple_fields import (
 
 def initialize_market_data_system(stock_symbols: List[str]):
     # Define the window length for data
-    window_length = 30  # Example length
+    window_length = 10  # Example length
 
     # Create DataFieldManager for each type of data
     field_managers = [

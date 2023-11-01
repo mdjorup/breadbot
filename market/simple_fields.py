@@ -75,7 +75,9 @@ class MovingAverageField(LogReturnField):
         close = bar.close
         cur_len = len(self.data)
 
-        if cur_len < self.period:
+        if cur_len == 0:
+            new_ma = close
+        elif cur_len < self.period:
             new_ma = self.data[-1] * (cur_len / (cur_len + 1)) + close / (cur_len + 1)
         else:
             new_ma = self.data[-1] + (close - self.data[-self.period]) / self.period

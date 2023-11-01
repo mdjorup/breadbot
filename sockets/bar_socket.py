@@ -33,13 +33,13 @@ class BarSocket:
     async def update_all(self, data):
         # convert data into a bar
 
-        symbol = data.symbol
-        opn = float(data.open)
-        high = float(data.high)
-        low = float(data.low)
-        close = float(data.close)
-        volume = float(data.volume)
-        timestamp = data.timestamp
+        symbol = data["symbol"]
+        opn = float(data["open"])
+        high = float(data["high"])
+        low = float(data["low"])
+        close = float(data["close"])
+        volume = float(data["volume"])
+        timestamp = data["timestamp"]
 
         bar = Bar(symbol, opn, high, low, close, volume, timestamp)
 
