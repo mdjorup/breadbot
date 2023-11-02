@@ -49,7 +49,7 @@ account.print_account_positions()
 
 aapl_state = market_data.state("AAPL")
 for obs in aapl_state:
-    print(obs[-1])
+    print(obs)
 
 
 GLOBAL_TRADE_SOCKET.stop()

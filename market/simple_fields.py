@@ -7,6 +7,10 @@ import numpy as np
 from market.data_field import DataField
 from shared import Bar
 
+# High bollinger band
+# Low bollinger band
+# VWAP
+
 
 class LogReturnField(DataField, ABC):
     def __init__(self, name: str, window_length: int):
@@ -172,3 +176,23 @@ class MACDFIeld(DataField):
 
         macd = self.short_ema_price() - self.long_ema_price()
         self.data.append(100 * macd / close)
+
+
+class VWAPField(LogReturnField):
+    def __init__(self, name, window_length, period: int = 60):
+        super().__init__(name, window_length)
+
+        self.period = period
+        self.volumes = deque(maxlen=period)
+        self.closes = deque(maxlen=period)
+
+    def update(self, bar: Bar):
+        close = bar.close
+        volume = bar.volume
+
+        self.volumes.append(volume)
+        self.closes.append(close)
+        current_vwap = sum([x * y for x, y in zip(self.volumes, self.closes)]) / sum(
+            self.volumes
+        )
+        self.add_entry(current_vwap)
