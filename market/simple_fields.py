@@ -144,3 +144,31 @@ class RSIField(DataField):
             rsi = 100 - (100 / (1 + rs))
 
         self.data.append(rsi)
+
+
+class MACDFIeld(DataField):
+    def __init__(self, name, window_length):
+        super().__init__(name, window_length)
+
+        self.short_ema = ExponentialMovingAverageField("short_ema", window_length, 12)
+        self.long_ema = ExponentialMovingAverageField("long_ema", window_length, 26)
+
+        self.data = deque(maxlen=window_length)  # MACD value, divided by stock price
+
+    def short_ema_price(self):
+        return self.short_ema.data[-1]
+
+    def long_ema_price(self):
+        return self.long_ema.data[-1]
+
+    def get_data(self) -> np.ndarray:
+        return np.array(self.data)
+
+    def update(self, bar: Bar):
+        close = bar.close
+
+        self.short_ema.update(bar)
+        self.long_ema.update(bar)
+
+        macd = self.short_ema_price() - self.long_ema_price()
+        self.data.append(100 * macd / close)

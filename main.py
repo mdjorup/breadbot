@@ -30,7 +30,7 @@ account.trade("TSLA", 10, OrderSide.SELL)
 account.trade("AAPL", 10, OrderSide.BUY)
 account.trade("TSLA", 10, OrderSide.BUY)
 
-for _ in range(30):
+for _ in range(60):
     asyncio.run(
         GLOBAL_BAR_SOCKET.update_all(
             {
@@ -39,7 +39,7 @@ for _ in range(30):
                 "high": 130 + np.random.normal(0, 1),
                 "low": 130 + np.random.normal(0, 1),
                 "close": 130 + np.random.normal(0, 1),
-                "volume": 1000000 + int(np.random.normal(0, 1000)),
+                "volume": 1000000 + int(np.random.normal(0, 100000)),
                 "timestamp": datetime.now(),
             }
         )
@@ -47,7 +47,9 @@ for _ in range(30):
 
 account.print_account_positions()
 
-print(market_data.state("AAPL"))
+aapl_state = market_data.state("AAPL")
+for obs in aapl_state:
+    print(obs[-1])
 
 
 GLOBAL_TRADE_SOCKET.stop()

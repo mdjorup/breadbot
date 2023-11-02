@@ -7,6 +7,7 @@ from market.simple_fields import (
     ExponentialMovingAverageField,
     HighPriceField,
     LowPriceField,
+    MACDFIeld,
     MovingAverageField,
     OpenPriceField,
     RSIField,
@@ -29,6 +30,7 @@ def initialize_market_data_system(stock_symbols: List[str]):
         DataFieldManager("SMA30", window_length, MovingAverageField, 30),
         DataFieldManager("EMA10", window_length, ExponentialMovingAverageField, 10),
         DataFieldManager("RSI", window_length, RSIField, 14),
+        DataFieldManager("MACD", window_length, MACDFIeld),
     ]
 
     # Define the stock symbols you are interested in
