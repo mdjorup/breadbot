@@ -104,9 +104,43 @@ class ExponentialMovingAverageField(LogReturnField):
         self.add_entry(new_ma)
 
 
-class RSI(DataField):
-    def get_data(self) -> np.ndarray:
-        return np.array([])
+class RSIField(DataField):
+    def __init__(self, name: str, window_length: int, periods: int = 14):
+        super().__init__(name, window_length)
 
-    def update(self):
+        self.diffs = deque(maxlen=periods)
+        self.prev_price = 0
+        self.data = deque(maxlen=window_length)
+
         pass
+
+    def get_data(self) -> np.ndarray:
+        return np.array(self.data)
+
+    def update(self, bar: Bar):
+        close = bar.close
+
+        if len(self.data) == 0:
+            self.data.append(50)
+            self.prev_price = close
+            self.diffs.append(0)
+            return
+
+        diff = close - self.prev_price
+        self.diffs.append(diff)
+
+        self.prev_price = close
+
+        avg_gain = sum([x for x in self.diffs if x > 0]) / len(self.diffs)
+        avg_loss = abs(sum([x for x in self.diffs if x < 0])) / len(self.diffs)
+
+        if avg_loss == 0:
+            if avg_gain == 0:
+                rsi = 50  # Neutral RSI when there's no gain or loss
+            else:
+                rsi = 100  # Max RSI when there's gain and no loss
+        else:
+            rs = avg_gain / avg_loss
+            rsi = 100 - (100 / (1 + rs))
+
+        self.data.append(rsi)
