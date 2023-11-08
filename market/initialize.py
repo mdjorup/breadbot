@@ -5,7 +5,9 @@ from market.market_data import MarketData
 from market.simple_fields import (
     ClosePriceField,
     ExponentialMovingAverageField,
+    HighBBField,
     HighPriceField,
+    LowBBField,
     LowPriceField,
     MACDFIeld,
     MovingAverageField,
@@ -33,6 +35,8 @@ def initialize_market_data_system(stock_symbols: List[str]):
         DataFieldManager("RSI", window_length, RSIField, 14),
         DataFieldManager("MACD", window_length, MACDFIeld),
         DataFieldManager("VWAP", window_length, VWAPField),
+        DataFieldManager("HighBB", window_length, HighBBField),
+        DataFieldManager("LowBB", window_length, LowBBField),
     ]
 
     # Define the stock symbols you are interested in

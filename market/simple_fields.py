@@ -196,3 +196,42 @@ class VWAPField(LogReturnField):
             self.volumes
         )
         self.add_entry(current_vwap)
+
+
+class HighBBField(LogReturnField):
+    def __init__(self, name: str, window_length: int):
+        super().__init__(name, window_length)
+
+        self.sma = MovingAverageField("", 20, 20)
+        self.std_dev = 0
+
+    def update(self, bar: Bar):
+        close = bar.close
+
+        self.sma.update(bar)
+        if len(self.data) < self.window_length:
+            self.data.append(close)
+            return
+
+        std_dev = np.std(self.sma.data)
+        upper_band = self.sma.data[-1] + 2 * std_dev
+        self.add_entry(upper_band)
+
+
+class LowBBField(LogReturnField):
+    def __init__(self, name: str, window_length: int):
+        super().__init__(name, window_length)
+
+        self.sma = MovingAverageField("", 20, 20)
+
+    def update(self, bar: Bar):
+        close = bar.close
+
+        self.sma.update(bar)
+        if len(self.data) < self.window_length:
+            self.data.append(close)
+            return
+
+        std_dev = np.std(self.sma.data)
+        lower_band = self.sma.data[-1] - 2 * std_dev
+        self.add_entry(lower_band)
