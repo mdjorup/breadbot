@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from datetime import datetime, timedelta
 
 import pytz
@@ -21,7 +22,7 @@ SECRET_KEY = os.environ.get("ALPACA_SECRET")
 
 client = StockHistoricalDataClient(api_key=API_KEY, secret_key=SECRET_KEY)
 
-start_date = datetime(2005, 1, 1)
+start_date = datetime(2017, 1, 1)
 end_date = datetime(2023, 11, 7)
 
 cur_date = start_date
@@ -41,6 +42,8 @@ while cur_date < end_date:
         end=window_end,
     )
 
+    print(f"Getting data for date {cur_date.strftime('%Y-%m-%d')}")
+
     out_file_path = f"data/raw/{stock}/{cur_date.strftime('%Y-%m-%d')}.json"
 
     cur_date = cur_date + timedelta(days=1)
@@ -54,11 +57,13 @@ while cur_date < end_date:
         continue
 
     if not isinstance(response, BarSet):
+        print("Warning: not instance of BarSet")
         continue
 
     data = response.data.get(stock, [])
 
     if len(data) == 0:
+        print("Warning: No data to add")
         continue
 
     json_data = []
@@ -79,5 +84,8 @@ while cur_date < end_date:
 
     with open(out_file_path, "w") as file:
         file.write(json.dumps(json_data))
+        print("Wrote to file " + out_file_path)
 
     file.close()
+
+    time.sleep(60 / 200)
